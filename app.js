@@ -1,9 +1,9 @@
+require('dotenv').config();
 const express = require('express')
 const expressLayouts = require('express-ejs-layouts')
 const session = require('express-session');
 const flash = require('connect-flash')
 const { authenticateUser } = require('./middleware/auth')
-require('dotenv').config();
 const path = require('path');
 const router = require('./routes/index');
 const makeAuthenticatedRequest = require('./helpers/AuthReq');
@@ -15,11 +15,11 @@ app.use(express.json());
 
 
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'default',
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI
+        mongoUrl: process.env.MONGO_URI, // variável de ambiente
     }),
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, // 1 dia
@@ -27,7 +27,7 @@ app.use(session({
       httpOnly: true,
       sameSite: 'lax'
     }
-  }));
+}));
 
 app.use(express.json())
 app.use(flash())

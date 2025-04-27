@@ -1,5 +1,6 @@
 const { Router } = require('express');
-const { signInWithEmailAndPassword, signOut } = require('firebase/auth');
+require('dotenv').config();
+const { signOut } = require('firebase/auth');
 const { auth } = require('../config/firebase-config');
 const authRouter = Router();
 const  makeAuthenticatedRequest  = require('./../helpers/AuthReq');
@@ -19,7 +20,7 @@ authRouter.get('/login', (req, res) => {
 authRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        const apiKey = "AIzaSyAX7PCdIpNTZAYXi6viASwt_4qS9znpQYY"; // Pega sua API KEY do .env
+        const apiKey = process.env.FIREBASE_API_KEY;
         const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
     
         const response = await axios.post(url, {

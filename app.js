@@ -5,29 +5,10 @@ const flash = require('connect-flash')
 const { authenticateUser } = require('./middleware/auth')
 const path = require('path');
 const router = require('./routes/index');
-const helmet = require('helmet');
 const makeAuthenticatedRequest = require('./helpers/AuthReq');
 const app = express()
 const port = 2001
 
-app.use(
-    helmet.contentSecurityPolicy({
-      useDefaults: false,
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'https://vercel.live', 'https://www.gstatic.com', 'https://cdn.jsdelivr.net', "'nonce-abc123'"],
-        scriptSrcElem: ["'self'", "'unsafe-inline'", "https://vercel.live", "https://www.gstatic.com"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
-        styleSrcElem: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
-        fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "https://*.firebaseio.com", "https://*.googleapis.com"],
-        frameSrc: ["'self'", "https://vercel.live"],
-        objectSrc: ["'none'"]
-      }
-    })
-  );
-  
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json()); 
 

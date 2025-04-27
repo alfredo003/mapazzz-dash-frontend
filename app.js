@@ -13,24 +13,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); 
 
 
-app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'sua_chave_secreta',
-      resave: false,
-      saveUninitialized: false, // mais seguro deixar falso
-      store: MongoStore.create({
-        mongoUrl:  process.env.MONGO_URL,
-        collectionName: 'sessions', // opcional, o nome da coleção no banco
-        ttl: 24 * 60 * 60 // tempo em segundos que a sessão vai durar (aqui: 1 dia)
-      }),
-      cookie: { 
-        maxAge: 24 * 60 * 60 * 1000, // 1 dia em ms
-        secure: process.env.NODE_ENV === 'production', 
-        httpOnly: true,
-        sameSite: 'lax'
-      }
-    })
-  );
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI
+    }),
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 1 dia
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'lax'
+    }
+  }));
 
 app.use(express.json())
 app.use(flash())

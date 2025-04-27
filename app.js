@@ -19,7 +19,7 @@ app.use(
       resave: false,
       saveUninitialized: false, // mais seguro deixar falso
       store: MongoStore.create({
-        mongoUrl: "mongodb+srv://alfredochivela3:alfredo003@cluster0.11aee1e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", // URI do seu banco
+        mongoUrl:  process.env.MONGO_URL, // URI do seu banco
         collectionName: 'sessions', // opcional, o nome da coleção no banco
         ttl: 24 * 60 * 60 // tempo em segundos que a sessão vai durar (aqui: 1 dia)
       }),

@@ -1,6 +1,6 @@
 const express = require('express')
 const expressLayouts = require('express-ejs-layouts')
-const cookieSession = require('cookie-session');
+const session = require('express-session');
 const flash = require('connect-flash')
 const { authenticateUser } = require('./middleware/auth')
 const path = require('path');
@@ -12,14 +12,18 @@ const port = 2001
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json()); 
 
+
 app.use(
-    cookieSession({
-      name: 'session',
-      keys: [process.env.SESSION_SECRET || 'sua_chave_secreta'], 
-      maxAge: 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-      sameSite: 'strict',
+    session({
+      secret: process.env.SESSION_SECRET || 'sua_chave_secreta',
+      resave: false,
+      saveUninitialized: true,
+      cookie: { 
+        maxAge: 24 * 60 * 60 * 1000,
+        secure: process.env.NODE_ENV === 'production', 
+        httpOnly: true,
+        sameSite: 'lax'
+      }
     })
   );
 

@@ -18,8 +18,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'default',
     resave: false,
     saveUninitialized: true,
+    rolling: true, // Tenta manter viva a sessão
     store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URI, // variável de ambiente
+        mongoUrl: process.env.MONGO_URI, 
+        touchAfter: 24 * 3600 
     }),
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, // 1 dia
@@ -38,6 +40,13 @@ app.set('layout', path.join(__dirname, 'views', 'layouts', 'full-width'));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
 
+app.use((err, req, res, next) => {
+    if (err.message === 'Unable to find the session to touch') {
+      console.warn('Aviso: Sessão não encontrada para atualizar (não é crítico).');
+      return next(); // Ignora e continua normalmente
+    }
+    next(err); // Outros erros realmente importantes passam
+  });
 
 app.get('/redifinir', authenticateUser, (req, res) => {
 

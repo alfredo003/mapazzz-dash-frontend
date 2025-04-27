@@ -1,0 +1,74 @@
+<link rel="stylesheet" href="/css/reports.css">
+<link rel="stylesheet" href="/css/register_user.css">
+<div class="content">
+
+    <% if(messages.success && messages.success.length > 0) { %>
+        <div id="success-alert" class="alert alert-success">
+          <span class="message"><%= messages.success %></span>
+          <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+        </div>
+      <% } %> 
+      <% if(messages.error && messages.error.length > 0) { %>
+        <div id="error-alert" class="alert alert-danger">
+          <span class="message"><%= messages.error %></span>
+          <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+        </div>
+      <% } %>
+
+      
+
+      <div id="user-form-page" class="page active">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-user-plus"></i> Adicionar Novo Utilizador</h3>
+            </div>
+            <div class="card-body">
+                <form id="userForm" class="needs-validation" action="/users/register" method="POST">
+                    <!-- Nome -->
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Digite o nome" required />
+                    </div>
+    
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" id="userEmail" name="email" class="form-control" placeholder="Digite o email" required />
+                    </div>
+    
+                    <!-- Telefone -->
+                    <div class="form-group">
+                        <label for="userPhone">Telefone</label>
+                        <input type="tel" id="userPhone" name="phoneNumber" class="form-control" placeholder="Digite o telefone" required />
+                    </div>
+                        <!-- Telefone -->
+                        <div class="form-group">
+                            <label for="userPhone">Palavra-passe (padrão)</label>
+                            <input type="tel" id="password" name="password" class="form-control" value="123456" disabled required />
+                        </div>
+                    <!-- Cargo -->
+                    <div class="form-group">
+                        <label for="userRole">Cargo</label>
+                        <select id="userRole" name="role" class="form-control" required>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+    
+                    <!-- Botões -->
+                    <div class="form-group buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Adicionar Utilizador
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i> Limpar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+
+</div>

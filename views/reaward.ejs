@@ -1,0 +1,97 @@
+<link rel="stylesheet" href="../css/reports.css">
+
+<div class="content">
+
+    <div class="card" style="--card-index: 1;">
+        <div class="card-header">
+            <h3>Usuário: <%= user.name %></h3>
+        </div>
+        <div class="card-body">
+            <div class="user-info"> 
+             
+                <div class="info-row">
+                    <div class="info-label">Email:</div>
+                    <div class="info-value"><%= user.email %></div>
+                </div>
+                    <div class="info-row">
+                        <div class="info-label">Pontos:</div>
+                        <div class="info-value"><%= user.points %></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Rank:</div>
+                        <div class="info-value" style="color: #28a745;"><%= user.rank %></div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="--card-index: 1;">
+        <div class="card-header">
+            <h3>Prêmio : <%= claimcode  %></h3>
+        </div>
+        <div class="card-body">
+            <div class="user-info"> 
+            
+                <div class="info-row">
+                  
+                    <div class="info-value"><img src="<%= reward.imageUrl %>" alt="Imagem do prêmio" style="width: 150px; height: 150px;"></div>
+                </div>
+                    <div class="info-row">
+                        <div class="info-label">Nome:</div>
+                        <div class="info-value"><%= reward.title %></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Pontos:</div>
+                        <div class="info-value" style="color: #28a745;"><%= reward.points %></div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <form action="/reivindicar" method="POST">
+        <input type="text" name="claimcode" value="<%= claimcode %>" hidden>
+        <input type="text" name="user" value="<%= user.uid %>" hidden>
+        <button class="btn btn-success" style="width: 100%;" >Reivindicar</button>
+    </form>
+
+</div>
+
+<style>
+.user-info {
+    padding: 20px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.info-label {
+    font-weight: bold;
+    width: 80px;
+}
+
+.info-value {
+    flex: 1;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+.status-badge.resgatado {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-badge.pendente {
+    background-color: #ffc107;
+    color: black;
+}
+
+.status-badge.cancelado {
+    background-color: #dc3545;
+    color: white;
+}
+</style>

@@ -1,0 +1,217 @@
+<link rel="stylesheet" href="css/reports.css">
+<link rel="stylesheet" href="css/authorities.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<div class="content">
+  <!-- Flash Messages -->
+  <% if(messages.success && messages.success.length > 0) { %>
+    <div id="success-alert" class="alert alert-success">
+      <span class="message"><%= messages.success %></span>
+      <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+    </div>
+  <% } %>
+  <% if(messages.error && messages.error.length > 0) { %>
+    <div id="error-alert" class="alert alert-danger">
+      <span class="message"><%= messages.error %></span>
+      <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+    </div>
+  <% } %> 
+
+  <!-- Institutions Page -->
+   <div id="institutions-page" class="page active">
+    <!-- Add Institution Form -->
+    <div class="card" >
+        <div class="card-header">
+            <h3>Adicionar Nova Instituição</h3>
+        </div>
+        <div class="card-body">
+            <form action="/instituicoes" method="POST">
+                <div class="form-group">
+                    <label for="name">Nome da Instituição</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Tipo</label>
+                    <select id="type" name="type" class="form-control" required>
+                        <option value="">Selecione...</option>
+                        <option value="hospital">Hospital</option>
+                        <option value="clinic">Clínica</option>
+                        <option value="health_center">Centro de Saúde</option>
+                        <option value="ngo">ONG</option>
+                        <option value="government">Governamental</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="address">Endereço</label>
+                    <input type="text" id="address" name="address" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact">Contacto</label>
+                    <input type="text" id="contact" name="contact" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Adicionar Instituição</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Institutions List -->
+    <div class="card" style="--card-index: 1;">
+        <div class="card-header">
+            <h3>Lista de Instituições</h3>
+            <div>
+                <button class="btn btn-outline btn-sm" id="refreshInstitutions"><i class="fas fa-sync-alt"></i> Atualizar</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="institutionsTable">
+                    <thead>
+                        <tr>
+                            <th>Instituição</th>
+                            <th>Endereço</th>
+                            <th>Contacto</th>
+                            <th>Email</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead> 
+                    <tbody id="institutionsTableBody">
+                        <% if (institutions && institutions.length > 0) { %>
+                            <% institutions.forEach(institution => { %>
+                                <tr>
+                                    <td>
+                                        <div class="institution-info">
+                                            <div class="institution-avatar <%= institution.type %>">
+                                                <% if (institution.photoUrl) { %>
+                                                    <img src="<%= institution.photo %>" alt="<%= institution.name %>">
+                                                <% } else { %>
+                                                    <i class="fas <%= getInstitutionIcon(institution.type) %>"></i>
+                                                <% } %>
+                                            </div>
+                                            <div class="institution-details">
+                                                <div class="institution-name"><%= institution.name %></div>
+                                                <div class="institution-type"><%= formatInstitutionType(institution.type) %></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><%= institution.address %></td>
+                                    <td><%= institution.contact %></td>
+                                    <td><%= institution.email %></td>
+                                    <td>
+                                        <div class="actions-cell">
+                                            <button class="btn-action" onclick="" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-action"  onclick="openDeleteModal('<%- institution.uid %>', '<%- encodeURIComponent(institution.name) %>')"  title="Excluir">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="text-center">Nenhuma instituição encontrada.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="modal-overlay" id="deleteModalOverlay">
+    <div class="modal-content" style="max-width: 400px;">
+        <h2><i class="fas fa-exclamation-triangle text-danger"></i> Confirmar Exclusão</h2>
+        <form id="deleteBlogForm" action="/instituicoes/delete" method="POST">
+            <input type="hidden" id="deleteAuthorityId" name="authorityId">
+            <p>Tem certeza que deseja excluir a Instituição<br>" <b><span id="deleteAuthorityName"></span></b> "</p>
+            <br>
+            <div class="form-group mt-4"> 
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-trash"></i> Confirmar Exclusão
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+<script>
+    function getInstitutionIcon(type) {
+        const icons = {
+            'hospital': 'fa-hospital',
+            'clinic': 'fa-clinic-medical',
+            'health_center': 'fa-first-aid',
+            'ngo': 'fa-hands-helping',
+            'government': 'fa-building'
+        };
+        return icons[type] || 'fa-building';
+    }
+
+    function formatInstitutionType(type) {
+        const types = {
+            'hospital': 'Hospital',
+            'clinic': 'Clínica',
+            'health_center': 'Centro de Saúde',
+            'ngo': 'ONG',
+            'government': 'Governamental'
+        };
+        return types[type] || type;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+     
+        window.openDeleteModal = function(uid, name) {
+            try {
+                const modal = document.getElementById('deleteModalOverlay');
+                if (!modal) {
+                    console.error('Delete modal element not found');
+                    return;
+                }
+    
+                name = decodeURIComponent(name.replace(/\+/g, ' '));
+               
+                document.getElementById('deleteAuthorityId').value = uid;
+                document.getElementById('deleteAuthorityName').textContent = name;
+    
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('active');
+                }, 10);
+            } catch (error) {
+                console.error('Error opening delete modal:', error);
+            }
+        };
+    
+        window.closeDeleteModal = function() {
+            const modal = document.getElementById('deleteModalOverlay');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        };
+    
+        const deleteModal = document.getElementById('deleteModalOverlay');
+        if (deleteModal) {
+            const modalContent = deleteModal.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            deleteModal.addEventListener('click', closeDeleteModal);
+        };
+    });
+</script>
+

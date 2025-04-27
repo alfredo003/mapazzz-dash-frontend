@@ -1,0 +1,130 @@
+<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<style>
+    .subtitle {
+    color: #fff;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    text-align: center;
+    display: block;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.back-to-login {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.back-to-login:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+    <div class="login-header">
+        <h3>Recuperar senha</h3>
+        <span class="subtitle">Digite seu email para receber as instruções de recuperação</span>
+    </div>
+ 
+    <% if (error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+    <form class="login-form" id="forgotPasswordForm" action="/forgot-password" method="POST">
+        <div class="form-group">
+            <input type="email" id="email" name="email" class="form-control" placeholder="Digite seu email" required>
+            <i class="fas fa-envelope"></i>
+        </div>
+       
+        <button type="submit" class="btn btn-primary">
+            Enviar link de recuperação
+            <div class="spinner"></div>
+        </button>
+
+        <div class="form-footer">
+            <a href="/login" class="back-to-login">Voltar para o login</a>
+        </div>
+
+        <div class="alert alert-success" id="successMessage" style="display: none;">
+            Email enviado! Por favor, verifique sua caixa de entrada.
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+
+<script>
+document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const button = e.target.querySelector('button');
+    const spinner = button.querySelector('.spinner');
+    
+    try {
+        button.disabled = true;
+        spinner.style.display = 'inline-block';
+        
+        const response = await fetch('/forgot-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+
+        if (response.ok) {
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        } else {
+            const data = await response.json();
+            document.getElementById('errorMessage').textContent = data.error || 'Ocorreu um erro. Tente novamente.';
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    } catch (error) {
+        document.getElementById('errorMessage').textContent = 'Erro de conexão. Tente novamente.';
+        document.getElementById('errorMessage').style.display = 'block';
+    } finally {
+        button.disabled = false;
+        spinner.style.display = 'none';
+    }
+});
+</script>
+

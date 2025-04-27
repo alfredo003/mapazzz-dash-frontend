@@ -1,0 +1,37 @@
+.stat-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card .background-icon {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    font-size: 5rem;
+    opacity: 0.1;
+    transform: rotate(-15deg);
+    color: currentColor;
+    z-index: 0;
+}
+
+.stat-card h3, 
+.stat-card p, 
+.stat-card small {
+    position: relative;
+    z-index: 1;
+}
+
+.stat-card h3 i {
+    margin-right: 8px;
+    color: inherit;
+}
+
+.stat-card small {
+    color: rgba(22, 22, 22, 0.7);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-top: 5px;
+}

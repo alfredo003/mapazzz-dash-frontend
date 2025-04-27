@@ -1,0 +1,108 @@
+.table-responsive {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#institutionsTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 1rem;
+}
+
+#institutionsTable thead th {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    font-weight: 600;
+    color: #344767;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #eee;
+}
+
+#institutionsTable tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+    color: #344767;
+}
+
+#institutionsTable tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.institution-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.institution-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #fff;
+    overflow: hidden;
+}
+
+.institution-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.institution-avatar.hospital { background-color: #4CAF50; }
+.institution-avatar.clinic { background-color: #2196F3; }
+.institution-avatar.health_center { background-color: #9C27B0; }
+.institution-avatar.ngo { background-color: #FF9800; }
+.institution-avatar.government { background-color: #607D8B; }
+
+.institution-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.institution-name {
+    font-weight: 600;
+    color: #344767;
+    margin-bottom: 0.25rem;
+}
+
+.institution-type {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.badge {
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-action {
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #f8f9fa;
+    color: #344767;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    background-color: #e9ecef;
+}

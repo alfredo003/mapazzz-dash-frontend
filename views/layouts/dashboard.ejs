@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%- title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/img/icon.png">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/chart.css">
+    <link rel="stylesheet" href="/css/message.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/menu.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="/img/logo-icon.png" alt="MapaZZZ Logo" class="logo">
+                <h2> <img src="/img/logo-latter.png" alt="MapaZZZ Logo" style="width: 153px; margin-top: 8px;"></h2>
+            </div>
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a href="/home" class="menu-item" >
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/instituicoes" class="menu-item">
+                            <i class="fas fa-hospital"></i>
+                            <span>Instituições</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/blog" class="menu-item">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Blogs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/premiacoes" class="menu-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>Prêmios</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/mapa_risco" class="menu-item" >
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>Mapa de Risco</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/reportagens" class="menu-item" >
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Reportagens</span>
+                        </a>
+                    </li>
+                    <li> 
+                        <a href="/notificacoes" class="menu-item">
+                            <i class="fas fa-bullhorn "></i>
+                            <span>Notificações</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/users" class="menu-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                <div class="user-info">
+                  <a href="/mynotify"> 
+                    <div class="user-notifications">
+                        <i class="fas fa-bell"></i>
+                       <!-- <span class="notification-badge">0</span>-->
+                    </div>
+                 </a>
+                   <a href="/perfil">
+                     <img src="/img/avatar.png" alt="User Avatar" class="user-avatar">
+                   </a>
+                    <div class="user-details">
+                        <span class="user-name">Administrador</span>
+                        <span class="user-role">Admin</span>
+                    </div>
+                    <a class="logout-btn" href="/logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Sair</span>
+                    </a>
+                </div>
+            </div>
+
+            <%- body %>
+        </div>
+    
+
+    <!-- External Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ 
+    <script src="/js/message.js"></script>
+
+ 
+      
+
+</body>
+</html>

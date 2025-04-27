@@ -1,0 +1,122 @@
+.risk-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+
+.risk-alto {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.risk-medio {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+ 
+.risk-baixo {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.btn {
+    margin: 0 2px;
+}
+
+.table-responsive {
+    margin: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #f5f5f5;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.card {
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    padding: 1rem;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary-color);
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+
+.status-ativo {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.status-resolvido {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.filter-controls input,
+.filter-controls select {
+    min-width: 200px;
+    flex: 1;
+}
+
+.filter-controls button {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .filter-controls input,
+    .filter-controls select,
+    .filter-controls button {
+        width: 100%;
+        min-width: unset;
+    }
+}

@@ -1,0 +1,362 @@
+<link rel="stylesheet" href="css/reports.css">
+
+<div class="content">
+
+  <% if(messages.success && messages.success.length > 0) { %>
+    <div id="success-alert" class="alert alert-success">
+      <span class="message"><%= messages.success %></span>
+      <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+    </div>
+  <% } %>
+  <% if(messages.error && messages.error.length > 0) { %>
+    <div id="error-alert" class="alert alert-danger">
+      <span class="message"><%= messages.error %></span>
+      <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+    </div>
+  <% } %>
+
+
+  <!-- Awards Page -->
+  <div id="awards-page" class="page active">
+   
+    <div class="card mb-4" style="--card-index: 0;">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Adicionar Novo Prêmio</h3>
+        <button type="button" class="btn btn-link" id="toggleForm">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="card-body" id="awardFormContainer">
+        <form id="awardForm" class="needs-validation" action="/premiacoes" method="POST"  enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label for="awardTitle" class="form-label">Nome do Prêmio</label>
+                <input type="text" id="awardTitle" name="title" class="form-control" required>
+                <div class="invalid-feedback">
+                  Por favor, insira um título para o prêmio.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label for="awardPhoto" class="form-label">Foto</label>
+                <div class="input-group">
+                  <input type="file" id="awardPhoto" name="file" class="form-control" required>
+                  
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group mb-3">
+            <label for="awardDescription" class="form-label">Pontos</label>
+            <input  type="number" class="form-control" max="4000" min="10"  name="points" required/>
+          </div>
+
+          <div class="form-group mb-3" id="photoPreview" style="display: none;">
+            <label class="form-label">Prévia da Foto</label>
+            <div class="preview-container">
+              <img id="previewImage" src="" width="100" height="100" alt="Prévia da foto" class="img-thumbnail">
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i>Adicionar Prêmio
+            </button>
+            <button type="reset" class="btn btn-outline-secondary">Limpar</button>
+           
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Awards List -->
+    <div class="card" style="--card-index: 1;">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Lista de Prêmios</h3>
+        <div style="display: flex; gap: 3rem;">
+          <button class="btn btn-success"  onclick="openClaimModal()">
+            <i class="fas fa-cart-plus me-2"></i> Saque de Prêmio
+          </button>
+          <div class="input-group">
+            <input type="text" class="form-control" id="searchAwards" placeholder="Buscar prêmios...">
+          
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="awardsTable" class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 15%">Foto</th>
+              
+                <th style="width: 40%">Título</th>
+                <th >Pontos</th>
+                <th style="width: 15%">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="awardsTableBody">
+              <% if (awards && awards.length > 0) { %>
+                  <% awards.forEach(award => { %>
+                      <tr>
+                          <td>      
+                             <img src="<%=award.imageUrl%>" alt="<%= award.title %>" class="img-thumbnail"/>
+                          </td>
+                          <td><%= award.title %></td>
+                          <td><%= award.points %></td>
+                          <td>
+                            <div class="actions-cell">
+                              <button 
+                                  class="btn btn-sm btn-light" 
+                                  onclick="openEditModal('<%-award.uid %>', '<%- encodeURIComponent(award.title) %>', '<%- encodeURIComponent(award.points) %>','<%- award.imageUrl %>')" 
+                                  title="Editar">
+                                  <i class="fas fa-edit"></i>
+                              </button>
+                              <button 
+                                  class="btn btn-sm btn-light" 
+                                  onclick="openDeleteModal('<%- award.uid %>', '<%- encodeURIComponent(award.title) %>')" 
+                                  title="Excluir">
+                                  <i class="fas fa-trash"></i>
+                              </button>
+                          </div>
+                          </td>
+                      </tr>
+                  <% }); %>
+              <% } else { %>
+                  <tr>
+                      <td colspan="5" class="text-center">Nenhum premio encontrado.</td>
+                  </tr>
+              <% } %>
+          </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div class="text-muted" id="awardsCount">Mostrando 0 prêmios</div>
+          <nav aria-label="Navegação de prêmios">
+            <ul class="pagination mb-0" id="awardsPagination">
+              <!-- Pagination will be added dynamically -->
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="editModalOverlay">
+  <div class="modal-content" style="max-width: 600px;">
+      <h2><i class="fas fa-edit"></i> Editar Prêmio</h2>
+      <form id="editBlogForm" class="needs-validation" action="/premiacoes/update" method="POST" enctype="multipart/form-data">
+          <input type="hidden" id="editAwardId" name="awardId">
+          <input type="hidden" id="currentImageUrl" name="currentImageUrl">
+          <div class="form-group">
+              <label for="editAwardTitle">Título</label>
+              <input type="text" id="editAwardTitle" name="title" class="form-control" 
+                     required minlength="3" maxlength="100">
+          </div>
+          <div class="form-group">
+              <label for="editAwardDescription">Pontos</label>
+              <input  type="number" class="form-control"  id="editAwardPoints" name="points" required/>
+          </div>
+          <div class="form-group">
+              <label for="editAwardPhoto">Nova Foto (opcional)</label>
+              <div class="input-group">
+                  <input type="file" id="editAwardPhoto" name="file" class="form-control">    
+              </div>
+              <div class="mt-2">
+                  <img id="currentAwardPhoto" src="" alt="Foto atual" class="img-thumbnail" style="max-height: 100px;">
+              </div>
+          </div>
+          <div class="form-group mt-4">
+              <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Salvar Alterações
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                  <i class="fas fa-times"></i> Cancelar
+              </button>
+          </div>
+      </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deleteModalOverlay">
+  <div class="modal-content" style="max-width: 400px;">
+      <h2><i class="fas fa-exclamation-triangle text-danger"></i> Confirmar Exclusão</h2>
+      <form id="deleteBlogForm" action="/premiacoes/delete" method="POST">
+          <input type="hidden" id="deleteAwardId" name="awardId">
+          <p>Tem certeza que deseja excluir o Prêmio <br>" <b><span id="deleteAwardTitle"></span></b> "</p>
+          <br>
+          <div class="form-group mt-4">
+              <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-trash"></i> Confirmar Exclusão
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">
+                  <i class="fas fa-times"></i> Cancelar
+              </button>
+          </div>
+      </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="claimModalOverlay">
+  <div class="modal-content" style="max-width: 600px;">
+      <h2><i class="fas fa-tag"></i> Reivindicar Prêmios </h2>
+      <form class="needs-validation" action="/premiacoes/search" method="POST">
+          <div class="form-group">
+              <label for="claimcode">Código de Saque</label>
+              <input type="text" id="claimcode" name="claimcode" class="form-control" required>
+          </div>
+          <div class="form-group mt-4">
+              <button type="submit" class="btn btn-success">
+                  <i class="fas fa-search"></i> Verificar 
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="closeClaimModal()">
+                  <i class="fas fa-times"></i> Cancelar
+              </button>
+          </div>
+      </form>
+  </div>
+</div>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+  
+      window.openEditModal = function(awardId, title, points, imageUrl) {
+          try {
+              const modal = document.getElementById('editModalOverlay');
+              if (!modal) {
+                  console.error('Modal element not found');
+                  return;
+              }
+  
+              title = decodeURIComponent(title.replace(/\+/g, ' '));
+  
+              // Preencher os campos
+              document.getElementById('editAwardId').value = awardId;
+              document.getElementById('editAwardTitle').value = title;
+              document.getElementById('editAwardPoints').value = points;
+              document.getElementById('currentImageUrl').value = imageUrl;
+              
+              const imgElement = document.getElementById('currentAwardPhoto');
+              if (imgElement) {
+                  imgElement.src = imageUrl;
+              }
+  
+              // Mostrar o modal com animação
+              modal.style.display = 'flex';
+              // Adicionar um pequeno delay para a animação funcionar
+              setTimeout(() => {
+                  modal.classList.add('active');
+              }, 10);
+          } catch (error) {
+              console.error('Error opening modal:', error);
+          }
+      
+   
+      window.closeEditModal = function() {
+          const modal = document.getElementById('editModalOverlay');
+          if (modal) {
+              modal.classList.remove('active');
+              // Esperar a animação terminar antes de esconder o modal
+              setTimeout(() => {
+                  modal.style.display = 'none';
+              }, 300);
+          }
+      };
+  
+          // Prevenir que cliques dentro do modal o fechem
+          const modalContent = modal.querySelector('.modal-content');
+          if (modalContent) {
+              modalContent.addEventListener('click', function(e) {
+                  e.stopPropagation();
+              });
+          }
+      }
+  
+      window.openDeleteModal = function(awardId, title) {
+          try {
+              const modal = document.getElementById('deleteModalOverlay');
+              if (!modal) {
+                  console.error('Delete modal element not found');
+                  return;
+              }
+  
+              title = decodeURIComponent(title.replace(/\+/g, ' '));
+  
+             
+              document.getElementById('deleteAwardId').value = awardId;
+              document.getElementById('deleteAwardTitle').textContent = title;
+  
+              modal.style.display = 'flex';
+              setTimeout(() => {
+                  modal.classList.add('active');
+              }, 10);
+          } catch (error) {
+              console.error('Error opening delete modal:', error);
+          }
+      };
+  
+      window.closeDeleteModal = function() {
+          const modal = document.getElementById('deleteModalOverlay');
+          if (modal) {
+              modal.classList.remove('active');
+              setTimeout(() => {
+                  modal.style.display = 'none';
+              }, 300);
+          }
+      };
+  
+  
+      const deleteModal = document.getElementById('deleteModalOverlay');
+      if (deleteModal) {
+          const modalContent = deleteModal.querySelector('.modal-content');
+          if (modalContent) {
+              modalContent.addEventListener('click', function(e) {
+                  e.stopPropagation();
+              });
+          }
+          deleteModal.addEventListener('click', closeDeleteModal);
+      };
+  
+      window.openClaimModal = function() {
+          try {
+              const modal = document.getElementById('claimModalOverlay');
+              if (!modal) {
+                  console.error('Modal element not found');
+                  return;
+              }
+
+              modal.style.display = 'flex';
+              setTimeout(() => {
+                  modal.classList.add('active');
+              }, 10);
+          } catch (error) {
+              console.error('Error opening modal:', error);
+          }
+      
+        }
+
+      window.closeClaimModal = function() {
+          const modal = document.getElementById('claimModalOverlay');
+          if (modal) {
+              modal.classList.remove('active');
+              setTimeout(() => {
+                  modal.style.display = 'none';
+              }, 300);
+          }
+      };
+
+      
+  });
+  </script>
+  
+<script src="js/award.js"></script>
+
+
+

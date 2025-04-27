@@ -1,0 +1,149 @@
+<link rel="stylesheet" href="css/reports.css">
+<div class="content">
+    <% if(messages.success && messages.success.length > 0) { %>
+        <div id="success-alert" class="alert alert-success">
+          <span class="message"><%= messages.success %></span>
+          <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+        </div>
+      <% } %>
+      <% if(messages.error && messages.error.length > 0) { %>
+        <div id="error-alert" class="alert alert-danger">
+          <span class="message"><%= messages.error %></span>
+          <button class="close-btn" onclick="closeAlert(this.parentElement)">&times;</button>
+        </div>
+      <% } %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title">
+                        <i class="fas fa-bell me-2"></i>
+                        Gerenciar Notificações
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Formulário para criar nova notificação -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-plus-circle me-2"></i>
+                                        Nova Notificação
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="/notificacoes" method="POST">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="title" class="form-label">
+                                                        <i class="fas fa-heading me-1"></i>
+                                                        Título
+                                                    </label>
+                                                    <input type="text" class="form-control form-control-lg" id="title" name="title" required>
+                                        </div>
+                                        </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="target" class="form-label">
+                                                        <i class="fas fa-users me-1"></i>
+                                                        Destinatários
+                                                    </label>
+                                                    <select class="form-control form-control-lg" id="target" disabled name="target">
+                                                <option value="all">Todos os Usuários</option>
+                                                >
+                                            </select>
+                                        </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label for="message" class="form-label">
+                                                <i class="fas fa-comment-alt me-1"></i>
+                                                Mensagem
+                                            </label>
+                                            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                                         
+                                        </div>
+
+                                      
+
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-paper-plane me-1"></i>
+                                                Enviar Notificação
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de notificações existentes -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h4 class="card-title mb-0">
+                                        <i class="fas fa-history me-2"></i>
+                                        Histórico de Notificações
+                                    </h4>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="notificationsTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Data</th>
+                                                    <th>Título</th>
+                                                    <th>Mensagem</th>
+                                                    <th>Destinatários</th>
+                                                    <th>Status</th>
+                                                    <th>Ações</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="institutionsTableBody">
+                                                <% if (notifications && notifications.length > 0) { %>
+                                                    <% notifications.forEach(notification => { %>
+                                                        <tr>
+                                                            <td><%= new Date(notification.createdAt._seconds * 1000).toLocaleString() %></td>
+                                                            <td><%= notification.title %></td>
+                                                            <td><%= notification.body %></td>
+                                                            <td>Todos os Usuários</td>
+                                                            <td><span style="color:green">Enviado</span></td>
+                                                            <td>
+                                                                <div class="actions-cell">
+                                                                <button class="btn-action" onclick="viewInstitution('<%= notification.uid %>')" title="Visualizar">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                                <button class="btn-action" onclick="editInstitution('<%= notification.uid%>')" title="Editar">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            </div>
+                                                            </td>
+                                                            
+                                                        </tr>
+                                                    <% }); %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">Nenhuma notificação encontrada.</td>
+                                                    </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

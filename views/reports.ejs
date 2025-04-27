@@ -1,0 +1,213 @@
+<link rel="stylesheet" href="css/reports.css">
+
+<div class="content">
+<div class="card" style="--card-index: 1;">
+    <div class="card-header">
+        <h3>Casos Ativos</h3>
+        <div class="filter-controls">
+            <input type="text" class="form-control" placeholder="Buscar..." id="searchInput">
+            <select class="form-control" id="riskFilter">
+                <option value="">Todos os níveis de risco</option>
+                <option value="alto">Alto</option>
+                <option value="medio">Médio</option>
+                <option value="baixo">Baixo</option>
+            </select>
+            <button class="btn btn-outline btn-sm" id="refreshActiveCases">
+                <i class="fas fa-sync-alt"></i> Atualizar
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="activeCasesTable">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Localização</th>
+                        <th>Nível de Risco</th>
+                        
+                        <th>Estado</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="activeCasesTableBody">
+                    <tr class="loading-row" style="display: none;">
+                        <td colspan="6" class="text-center">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando...
+                        </td>
+                    </tr>
+                    <% if (resultsActive && resultsActive.length > 0) { %>
+                        <% resultsActive.forEach(report => { %>
+                            <tr>
+                                <td><%=report.title %></td>
+                                <td><%=report.location %></td>
+                                <td>
+                                    <span class="risk-badge risk-<%= report.riskLevel === 0 ? 'baixo' : report.riskLevel === 2 ? 'medio' : 'alto' %>">
+                                        <%= report.riskLevel === 0 ? 'Baixo' : report.riskLevel === 2 ? 'Médio' : 'Alto' %>
+                                    </span>
+                                </td>
+                              
+                                <td>
+                                    <span class="status-badge status-<%= report.status === 'fixed' ? 'resolvido' : 'nao-resolvido' %>">
+                                        <%= report.status === 'fixed' ? 'Resolvido' : 'Não Resolvido' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-outline btn-sm" onclick="openViewModal('<%- report.title %>','<%-report.location %>','<%- report.description %>','<%- report.imageUrl %>')"  title="Visualizar detalhes">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                  
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="text-center">Nenhuma Reportagem encontrada.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            <button class="btn btn-outline btn-sm" id="prevPage" disabled>
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+            <span class="page-info">Página <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
+            <button class="btn btn-outline btn-sm" id="nextPage">
+                Próximo <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card" style="--card-index: 1;">
+    <div class="card-header">
+        <h3>Casos Resolvidos</h3>
+        <div>
+            <button class="btn btn-outline btn-sm" id="refreshActiveCases"><i class="fas fa-sync-alt"></i> Atualizar</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="activeCasesTable">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Localização</th>
+                        <th>Nível de Risco</th>
+                        <th>Estado</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="activeCasesTableBody">
+                    <% if (resultsFixed && resultsFixed.length > 0) { %>
+                        <% resultsFixed.forEach(report => { %>
+                            <tr>
+                                <td><%=report.title %></td>
+                                <td><%=report.location %></td>
+                                <td>
+                                    <span class="risk-badge risk-<%= report.riskLevel === 0 ? 'baixo' : report.riskLevel === 2 ? 'medio' : 'alto' %>">
+                                        <%= report.riskLevel === 0 ? 'Baixo' : report.riskLevel === 2 ? 'Médio' : 'Alto' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-<%= report.status === 'fixed' ? 'resolvido' : 'nao-resolvido' %>">
+                                        <%= report.status === 'fixed' ? 'Resolvido' : 'Não Resolvido' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-outline btn-sm" onclick="openViewModal('<%- report.title %>','<%-report.location %>','<%- report.description %>','<%- report.imageUrl %>')" >
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="text-center">Nenhuma Reportagem encontrada.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="modal-overlay" id="viewModalOverlay">
+    <div class="modal-content" style="max-width: 40rem;">
+        <h2><i class="fas fa-heartbeat  text-danger"></i> <span id="viewTitle"></span> </h2>
+    
+        <img id="viewimageUrl" src="" alt="Foto atual" class="img-thumbnail" style="max-height: 300px;">
+            <p></b>
+                <p> <small><b>Localização : <span id="viewLocation"></span></b> </small> </p>
+                   <br><hr><br>
+                <p><span id="viewdescription"></span></p>
+                    <br><hr><br>
+            <br>
+            <div class="form-group mt-4"> 
+               
+                <button type="button" class="btn btn-secondary" onclick="closeviewModal()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+    
+    </div>
+  </div>
+
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+     
+        window.openViewModal = function(title, location,description,imageUrl) {
+            try {
+                const modal = document.getElementById('viewModalOverlay');
+                if (!modal) {
+                    console.error('View modal element not found');
+                    return;
+                }
+    
+               
+                document.getElementById('viewTitle').textContent = title;
+                document.getElementById('viewLocation').textContent = location;
+                document.getElementById('viewdescription').textContent = description;
+
+                const imgElement = document.getElementById('viewimageUrl');
+                if (imgElement) {
+                    imgElement.src = imageUrl;
+                }
+
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('active');
+                }, 10);
+            } catch (error) {
+                console.error('Error opening view modal:', error);
+            }
+        };
+    
+        window.closeviewModal = function() {
+            const modal = document.getElementById('viewModalOverlay');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        };
+    
+        const viewModal = document.getElementById('viewModalOverlay');
+        if (viewModal) {
+            const modalContent =viewModal.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            viewModal.addEventListener('click', closeviewModal);
+        };
+    });
+</script>

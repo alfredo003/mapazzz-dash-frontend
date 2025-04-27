@@ -1,0 +1,77 @@
+:root {
+    --primary-color: #cf3036;
+    --primary-dark: #c0392b;
+    --light-color: #ffffff;
+    --dark-color: #333333;
+    --green-color:#4caf50;
+    --gray-light: #f5f5f5;
+    --gray-medium: #e0e0e0;
+    --gray-dark: #bdbdbd;
+    --animation-duration: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.preview-container {
+    max-width: 300px;
+    max-height: 300px;
+    overflow: hidden;
+  }
+  
+  .preview-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .table th {
+    white-space: nowrap;
+  }
+  
+  .table td {
+    vertical-align: middle;
+  }
+  
+  .table td img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+  
+  .form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+  
+
+.badge {
+    --bs-badge-padding-x: 0.65em;
+    --bs-badge-padding-y: 0.35em;
+    --bs-badge-font-size: 0.75em;
+    --bs-badge-font-weight: 700;
+    --bs-badge-border-radius: 0.375rem;
+    display: inline-block;
+    padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
+    font-size: var(--bs-badge-font-size);
+    font-weight: var(--bs-badge-font-weight);
+    line-height: 1;
+    color: var(--bs-badge-color);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--bs-badge-border-radius);
+}

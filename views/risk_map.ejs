@@ -1,0 +1,181 @@
+<link rel="stylesheet" href="css/reports.css">
+
+
+   <style>
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-card {
+    background: var(--light-color);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card h4 {
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-card p {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Filtros do Mapa */
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+.filter-controls select,
+.filter-controls input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--light-color);
+}
+
+.filter-controls select:focus,
+.filter-controls input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+    </style>
+                <div class="content">
+                <!-- Risk Map Page -->
+                <div id="risk-map-page" class="page active" >
+                    <!-- Map -->
+                        <!-- Estatísticas do Mapa -->
+                   
+                    <div class="card" style="--card-index: 0;"> 
+                        <div class="card-header">
+                            <h3>Zonas de Risco</h3>
+                            <div class="filter-controls">
+                                <select id="riskLevelFilter" class="form-control">
+                                    <option value="all">Todos os níveis de risco</option>
+                                    <option value="3">Alto Risco</option>
+                                    <option value="2">Médio Risco</option>
+                                    <option value="1">Baixo Risco</option>
+                                </select>
+                                <button class="btn btn-outline btn-sm" id="refreshMap">
+                                    <i class="fas fa-sync-alt"></i> Atualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="map" style="height: 800px;"></div>
+                        </div>
+                    </div>
+
+                 
+                </div>
+            </div>
+
+         
+
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <div id="map" style="height: 500px;"></div>
+            
+            <script>
+var myHeaders = new Headers();
+var myInit = { 
+  method: "GET", 
+  headers: myHeaders,
+};
+
+var myRequest = new Request("http://localhost:2000/api/reportagens/zonas", myInit);
+
+var map = L.map('map').setView([-8.839, 13.289], 13);
+
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+  maxZoom: 100
+}).addTo(map);
+
+
+
+fetch(myRequest)
+  .then(response => response.json())
+  .then(data => {
+
+    let allCoords = [];
+    
+    if (data && data.zones && Array.isArray(data.zones)) {
+      data.zones.forEach(zoneGroup => {
+        if (zoneGroup.zones && Array.isArray(zoneGroup.zones)) {
+          zoneGroup.zones.forEach(zone => {
+            if (zone.latitude && zone.longitude) {
+
+              allCoords.push([zone.latitude, zone.longitude]);
+              
+
+              let color, fillColor;
+              
+              switch(zone.riskLevel) {
+                case 1:
+                  color = '#d7040c';
+                  fillColor = '#cf3036';
+                  break;
+                case 2:
+                  color = '#ff8c00';
+                  fillColor = '#ffa500';
+                  break;
+                case 3:
+                  color = '#ffff00';
+                  fillColor = '#ffff99';
+                  break;
+                default:
+                  color = '#d7040c';
+                  fillColor = '#cf3036';
+              }
+              
+              L.circle([zone.latitude, zone.longitude], {
+                color: color,
+                fillColor: fillColor,
+                fillOpacity: 0.4,
+                radius: 200
+              }).addTo(map);
+            }
+          });
+        }
+      });
+      
+    
+      if (allCoords.length > 0) {
+        map.fitBounds(L.latLngBounds(allCoords), {
+          padding: [50, 50], 
+          maxZoom: 15 
+        });
+      }
+    }
+    
+    L.marker([-8.839, 13.289]).addTo(map)
+      .bindPopup('Um marcador em Luanda!');
+  })
+  .catch(error => {
+    console.error('Error fetching zones:', error);
+   
+    L.marker([-8.839, 13.289]).addTo(map)
+      .bindPopup('Um marcador em Luanda!')
+      .openPopup();
+  });
+  </script>
+            

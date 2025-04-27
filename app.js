@@ -24,13 +24,13 @@ app.use(session({
         touchAfter: 24 * 3600 
     }),
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 1 dia
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-      sameSite: 'lax'
+        secure: true, // só envia cookie via HTTPS
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 1 dia
     }
 }));
-
+app.set('trust proxy', 1);
 app.use(express.json())
 app.use(flash())
 

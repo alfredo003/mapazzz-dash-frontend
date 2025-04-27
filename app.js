@@ -6,9 +6,9 @@ const { authenticateUser } = require('./middleware/auth')
 const path = require('path');
 const router = require('./routes/index');
 const makeAuthenticatedRequest = require('./helpers/AuthReq');
+const MongoStore = require('connect-mongo');
 const app = express()
 const port = 2001
-
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json()); 
 
@@ -17,9 +17,14 @@ app.use(
     session({
       secret: process.env.SESSION_SECRET || 'sua_chave_secreta',
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false, // mais seguro deixar falso
+      store: MongoStore.create({
+        mongoUrl: "mongodb+srv://alfredochivela3:alfredo003@cluster0.11aee1e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", // URI do seu banco
+        collectionName: 'sessions', // opcional, o nome da coleção no banco
+        ttl: 24 * 60 * 60 // tempo em segundos que a sessão vai durar (aqui: 1 dia)
+      }),
       cookie: { 
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 24 * 60 * 60 * 1000, // 1 dia em ms
         secure: process.env.NODE_ENV === 'production', 
         httpOnly: true,
         sameSite: 'lax'

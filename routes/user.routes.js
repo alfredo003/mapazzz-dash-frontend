@@ -65,7 +65,7 @@ userRoutes.post('/register', async(req, res) => {
         const user = userCredential.user;
 
         const actionCodeSettings = {
-            url: 'https://burger-order-screen.vercel.app/',
+            url: 'https://mapazzz-dash-frontend.onrender.com/login',
             handleCodeInApp: false
           };
 

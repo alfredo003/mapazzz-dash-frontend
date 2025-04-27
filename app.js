@@ -3,6 +3,7 @@ const expressLayouts = require('express-ejs-layouts')
 const session = require('express-session');
 const flash = require('connect-flash')
 const { authenticateUser } = require('./middleware/auth')
+require('dotenv').config();
 const path = require('path');
 const router = require('./routes/index');
 const makeAuthenticatedRequest = require('./helpers/AuthReq');

@@ -21,7 +21,9 @@ app.use(
       store: MongoStore.create({
         mongoUrl:  process.env.MONGO_URL,
         mongoOptions: {
-            ssl: false
+            ssl: true,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
           }, 
         collectionName: 'sessions', // opcional, o nome da coleção no banco
         ttl: 24 * 60 * 60 // tempo em segundos que a sessão vai durar (aqui: 1 dia)

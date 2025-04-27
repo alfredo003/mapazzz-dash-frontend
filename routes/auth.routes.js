@@ -2,7 +2,6 @@ const { Router } = require('express');
 const { signInWithEmailAndPassword, signOut } = require('firebase/auth');
 const { auth } = require('../config/firebase-config');
 const authRouter = Router();
-
 const  makeAuthenticatedRequest  = require('./../helpers/AuthReq');
 
 authRouter.get('/', (req, res) => {

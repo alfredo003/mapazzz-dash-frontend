@@ -3,6 +3,7 @@ const { signInWithEmailAndPassword, signOut } = require('firebase/auth');
 const { auth } = require('../config/firebase-config');
 const authRouter = Router();
 const  makeAuthenticatedRequest  = require('./../helpers/AuthReq');
+const axios = require('axios');
 
 authRouter.get('/', (req, res) => {
     res.redirect('/login');
@@ -18,15 +19,19 @@ authRouter.get('/login', (req, res) => {
 authRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user =  userCredential.user;
-        
-        const token = await user.getIdToken();
-        const userId = user.uid;
-
-
-        req.session.userId = userId;
-        req.session.token = token;
+        const apiKey = "AIzaSyAX7PCdIpNTZAYXi6viASwt_4qS9znpQYY"; // Pega sua API KEY do .env
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+    
+        const response = await axios.post(url, {
+          email,
+          password,
+          returnSecureToken: true
+        });
+    
+        const { idToken, localId } = response.data;
+    
+        req.session.userId = localId;
+        req.session.token = idToken;
         req.session.userEmail = email;
         req.session.pass = password;
 
